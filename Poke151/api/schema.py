@@ -31,19 +31,46 @@ class Query(ObjectType):
     GraphQL Query type
     """
 
-    ability = graphene.Field(AbilityType, pk=graphene.String())
-    pokemon = graphene.Field(PokemonType, pk=graphene.String())
-    pokemon_profile = graphene.Field(PokemonProfileType, pk=graphene.String())
+    ability = graphene.Field(AbilityType, id=graphene.String())
+    pokemon = graphene.Field(PokemonType, id=graphene.String())
+    pokemon_profile = graphene.Field(PokemonProfileType, id=graphene.String())
+
     abilities = graphene.List(AbilityType)
     pokemons = graphene.List(PokemonType)
     pokemon_profiles = graphene.List(PokemonProfileType)
 
     def resolve_ability(self, info, **kwargs):
-        pk = kwargs.get('pk')
+        id = kwargs.get('id')
 
-        if pk is not None:
-            return Ability.objects.get(pk=pk)
+        if id is not None:
+            return Ability.objects.get(pk=id)
 
         return None
+
+    def resolve_pokemon(self, info, **kwargs):
+        id = kwargs.get('id')
+
+        if id is not None:
+            return Pokemon.objects.get(pk=id)
+        
+        return None
+
+    def resolve_pokemon_profile(self, info, **kwargs):
+        id = kwargs.get('id')
+
+        if id is not None:
+            return PokemonProfile.objects.get(pk=id)
+        
+        return None
+
+    def resolve_abilities(self, info, **kwargs):
+            return Ability.objects.all()
+
+    def resolve_pokemons(self, info, **kwargs):
+            return Pokemon.objects.all()
+    
+    def resolve_pokemon_profiles(self, info, **kwargs):
+            return PokemonProfile.objects.all()
+
 
 schema = graphene.Schema(query=Query)
